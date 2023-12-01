@@ -1,44 +1,14 @@
-import pprint
-
-# Задача №1:
-
-cook_book = {}
-ingredients_list = []
-ORIGINAL = "recipes.txt"
-EDITED = "recipes_2.txt"
-with open(ORIGINAL) as orig, open(EDITED, "w") as edited: # Удаляем все пустые строки и записываем в новый файл
-    for line in orig:
-        if line.strip():
-            edited.write(line)
-
-with open('recipes_2.txt', encoding='utf-8') as f:
-    for line in f:
-        dish_name = line.strip()
-        ingredients_qty = int(f.readline().strip())
-        for ingredient_line in range(ingredients_qty):
-            ingredients_qty -= 1
-            ingredient_dict = {}
-            item1, item2, item3 = f.readline().split("|")
-            ingredient_dict['ingredient_name'] = item1.strip()
-            ingredient_dict['quantity'] = int(item2.strip())
-            ingredient_dict['measure'] = item3.strip()
-            ingredients_list.append(ingredient_dict)
-            cook_book[dish_name] = ingredients_list
-        ingredients_list = []
-
-# Задача №2
-
-def get_shop_list_by_dishes(dishes, person_count):
-    need_purch = {}
-    dishes_list = cook_book.keys()
-    for dish in dishes:
-        if dish in dishes_list:
-            products = cook_book[dish]
-            for product in products:
-                product_count = product.get('quantity') * person_count
-                need_purch[product.get('ingredient_name')] = {'quantity': product_count,
-                                                              'measure': product.get('measure')}
-    return need_purch
+with open('1.txt', encoding='utf') as file_1, open('2.txt', encoding='utf') as file_2, open('3.txt', encoding='utf') as file_3, open('result.txt', 'w', encoding='utf') as res:
+    need_writes = ({'1.txt': file_1.readlines(), '2.txt': file_2.readlines(), '3.txt': file_3.readlines()}) # Создём словарь со списками строк из файлов
+    sorted_writes = dict(sorted(need_writes.items(), key=lambda item: item[1], reverse=True)) # Сортируем словарь по увеличению кол-ва строк в списках
+    for write in sorted_writes.items(): # Запись в результирующий файл
+        res.write(f'{write[0]}\n') # Запись названия файла
+        res.write(f'{len(write[1])}\n') # Запись кол-во строк в файле
+        res.write(f'\n') # Дополнительная строка для разделения служебной ниформации и содержания файла
+        for line in write[1]: # Запись строк в новый файл
+            if '\n' in line: # Проверка, имеет ли строка знак переноса, если нет-добавляем знак
+                res.write(line)
+            else:
+                res.write(f'{line}\n\n')
 
 
-pprint.pprint(get_shop_list_by_dishes(['Запеченный картофель', 'Картофель по мексикански'], 2))
